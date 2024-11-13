@@ -32,7 +32,6 @@ python $prep_scripts/mfasta2fasta.py -i $path_out/$out_name.clean${gapth}.mfasta
 
 # Calculates an amino acid profile for each equence (fasta file) using homstrad substitution matrix calculated by Jean-Chrostophe Gelly. 
 # Gaps are considered as 21st amino acid. 20 columns are then divided by the 21st (gap) column for normalisation.
-
 translate(){
     filename=$(basename -- "$1")
     filename="${filename%.*}"
@@ -47,12 +46,13 @@ translate(){
 }
 export -f translate
 
+
 #ls $rep/*.fasta > $path_out/list_fasta
 #echo $MAX_CPUS
 #cat list_fasta | xargs -P $MAX_CPUS -l bash -c 'translate $1'
 #echo translate "$0" "$prep_scripts" "$rep"
 #find $rep -type f -name '*.fasta' | xargs -P 1 -l bash -c 'translate "$0" "$prep_scripts" "$rep"'
-find $rep -type f -name '*.fasta' | xargs -P $MAX_CPUS -l bash -c 'translate "$0"'
+find $rep -type f -name '*.fasta' | xargs -P $MAX_CPUS -n1 bash -c 'translate "$0"'
 #"$prep_scripts" "$rep"'
 
 #for f in $rep/*.fasta; do

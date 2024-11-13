@@ -3,3 +3,4 @@ __pycache__/
 data/.DS_Store
 .vscode/
 .ipynb_checkpoints/
+examples/*/*/fasta0.9/*
