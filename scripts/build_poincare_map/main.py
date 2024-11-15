@@ -104,7 +104,7 @@ def parse_args():
         help='Flag True or False, if you want to plot the output.', type=str, 
         default='True')
     parser.add_argument('--checkout_freq',
-        help='Checkout frequency (in epochs) to show intermidiate results', 
+        help='Checkout frequency (in epochs) to show intermediate results', 
         type=int, default=10)
 
     parser.add_argument('--tree', 
