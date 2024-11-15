@@ -11,7 +11,7 @@ import numpy as np
 import argparse
 import torch
 import pandas as pd
-from data import prepare_data, compute_rfa
+from data import prepare_data, compute_rfa, compute_rfa_w_custom_distance
 from model import PoincareEmbedding, PoincareDistance
 from model import poincare_root, poincare_translation
 from rsgd import RiemannianSGD
@@ -113,9 +113,14 @@ def parse_args():
     parser.add_argument('--seed',
         help='Random seed', type=int, default=0)
 
-    parser.add_argument('--labels', help='has labels', type=int, default=1)
-    parser.add_argument('--mode',
-        help='Mode: features or KNN', type=str, default='features')
+    parser.add_argument('--labels', help='array containing the feature labels in the same order as in the features dataset used to compute the provided distance matrix',
+    type=str)
+    # parser.add_argument('--labels', help='has labels', type=int, default=1)
+    # parser.add_argument('--mode',
+    #     help='Mode: features or KNN', type=str, default='features')
+    parser.add_argument('--distance_matrix',
+        help='Path to the CSV file containing the precomputed distance matrix',
+        type=str, default=None)
 
     parser.add_argument('--normalize',
         help='Apply z-transform to the data', type=int, default=0)
@@ -454,4 +459,4 @@ def poincare_map_w_custom_distance(opt):
 
 if __name__ == "__main__":
     args = parse_args()
-    poincare_map(args)
+    poincare_map_w_custom_distance(args)
