@@ -310,6 +310,148 @@ def poincare_map(opt):
     #                        coldict=color_dict, file_name=f'{fout}_rotate_cut{t}', d1=8.5, d2=8.0, bbox=(1.2, 1.), leg=leg)
 
 
+def poincare_map_w_custom_distance(opt):
+    # read and preprocess the dataset
+    opt.cuda = True if torch.cuda.is_available() else False
+    print('CUDA:', opt.cuda)
+
+    set_seed(opt.seed)
+#    torch.manual_seed(opt.seed)
+
+    # Features assignment only if a precomputed distance matrix is not provided
+    if opt.distance_matrix is None:
+        features, labels = prepare_data(opt.input_path, withroot=opt.rotate)
+        print(f'labels: {labels}')
+
+        # Download features as CSV file, Numpy array
+        features_path = os.path.join(opt.matrices_output_path, 'features.csv')
+        np.savetxt(features_path, features, delimiter=',')
+        print(f'features CSV file saved to {features_path}')
+
+        # Download labels as CSV file, Numpy array
+        labels_path = os.path.join(opt.matrices_output_path, 'labels.csv')
+        np.savetxt(labels_path, labels, delimiter=',', fmt='%s')
+        print(f'labels CSV file saved to {labels_path}')
+
+        distance_matrix = None
+
+    else:
+        features = None
+        distance_matrix = np.loadtxt(opt.distance_matrix, delimiter=',')
+        # Create directory to save matrices when a precomputed distance matrix is provided
+        if not os.path.exists(opt.output_path):
+            os.makedirs(opt.output_path)
+
+
+
+    # if not (opt.tree is None):
+    #     tree_levels, color_dict = get_tree_colors(
+    #         opt, labels,
+    #         f'{opt.input_path}/{opt.family}_tree_cluster_{opt.tree}')
+    # else:
+    #     color_dict = None
+    #     tree_levels = None
+
+    # compute matrix of RFA similarities
+
+    RFA = compute_rfa(
+        features,
+        distance_matrix,
+        # mode=opt.mode,
+        k_neighbours=opt.knn,
+        distfn=opt.distfn,
+        distlocal=opt.distlocal,
+        connected=opt.connected,
+        sigma=opt.sigma,
+        output_path=opt.matrices_output_path
+        )
+    print(RFA)
+
+    # Download RFA matrix as CSV file, NumPy array
+    RFA_matrix_path = os.path.join(opt.matrices_output_path, 'RFA_matrix.csv')
+    np.savetxt(RFA_matrix_path, RFA, delimiter=",")
+    print(f"RFA matrix CSV file saved to {RFA_matrix_path}")
+
+    # Continue using RFA as a tensor in the rest of the code
+    if opt.batchsize < 0:
+        opt.batchsize = min(512, int(len(RFA)/10))
+        print('batchsize = ', opt.batchsize)
+
+    opt.lr = opt.batchsize / 16 * opt.lr
+
+    titlename, fout = create_output_name(opt)
+
+    indices = torch.arange(len(RFA))
+
+    if opt.cuda:
+        indices = indices.cuda()
+        RFA = RFA.cuda()
+
+    dataset = TensorDataset(indices, RFA)
+
+    # instantiate our Embedding predictor
+    predictor = PoincareEmbedding(
+        len(dataset),
+        opt.dim,
+        dist=PoincareDistance,
+        max_norm=1,
+        Qdist=opt.distr, 
+        lossfn = opt.lossfn,
+        gamma=opt.gamma,
+        cuda=opt.cuda
+        )
+
+    # instantiate the Riemannian optimizer 
+    t_start = timeit.default_timer()
+    optimizer = RiemannianSGD(predictor.parameters(), lr=opt.lr)
+
+    # train predictor
+    print('Starting training...')
+    embeddings, loss, epoch = train(
+        predictor,
+        dataset,
+        optimizer,
+        opt,
+        fout=fout,
+        earlystop=opt.earlystop
+        )
+
+    df_pm = pd.DataFrame(embeddings, columns=['pm1', 'pm2'])
+    if opt.distance_matrix is None:
+        df_pm['proteins_id'] = labels
+        # print(f'labels: {labels}')
+    else:
+        labels = np.loadtxt(opt.labels, delimiter=',', dtype=str)
+        df_pm['proteins_id'] = labels
+        # print(f'labels: {labels}')
+
+    if opt.rotate:
+        idx_root = np.where(df_pm['proteins_id'] == str(opt.iroot))[0][0]
+        print("Recentering poincare disk at ", opt.iroot)
+#        print("root index: ", idx_root)
+        poincare_coord_rot = poincare_translation(
+            -embeddings[idx_root, :], embeddings)
+        df_rot = df_pm.copy()
+        df_rot['pm1'] = poincare_coord_rot[:, 0]
+        df_rot['pm2'] = poincare_coord_rot[:, 1]
+        df_rot.to_csv(fout + '.csv', sep=',', index=False)
+
+    else:
+        df_pm.to_csv(fout + '.csv', sep=',', index=False)
+
+    t = timeit.default_timer() - t_start
+    titlename = f"\nloss = {loss:.3e}\ntime = {t/60:.3f} min"
+    print(titlename)
+
+    plotPoincareDisc(
+        embeddings, 
+        title_name=titlename,
+        file_name=fout, 
+        d1=5.5, d2=5.0, 
+        bbox=(1.2, 1.),
+        leg=False
+        )
+
 if __name__ == "__main__":
     args = parse_args()
     poincare_map(args)
