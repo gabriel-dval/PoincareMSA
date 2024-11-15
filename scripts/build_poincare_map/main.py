@@ -359,7 +359,7 @@ def poincare_map_w_custom_distance(opt):
 
     # compute matrix of RFA similarities
 
-    RFA = compute_rfa(
+    RFA = compute_rfa_w_custom_distance(
         features,
         distance_matrix,
         # mode=opt.mode,
