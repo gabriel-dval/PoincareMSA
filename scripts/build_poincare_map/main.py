@@ -97,6 +97,8 @@ def parse_args():
 
     parser.add_argument('--output_path', help='Path to dataset to embed', type=str, 
         default='/Users/klanna/UniParis/results/glob/')
+    
+    parser.add_argument('--matrices_output_path', help='Path to save KNN and RFA matrices', type=str)
 
     parser.add_argument('--plot',
         help='Flag True or False, if you want to plot the output.', type=str, 
