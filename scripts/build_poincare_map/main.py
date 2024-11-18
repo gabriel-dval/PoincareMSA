@@ -20,6 +20,7 @@ from poincare_maps import plotPoincareDisc
 from coldict import *
 
 import os
+import sys
 import os.path
 # from pathlib import Path
 import timeit
@@ -343,6 +344,8 @@ def poincare_map_w_custom_distance(opt):
         distance_matrix = None
 
     else:
+        if opt.labels is None:
+            raise AttributeError('You cannot input a custom distance matrix without corresponding feature labels')
         features = None
         distance_matrix = np.loadtxt(opt.distance_matrix, delimiter=',')
         # Create directory to save matrices when a precomputed distance matrix is provided
