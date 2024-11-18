@@ -35,6 +35,7 @@ def create_parser():
     return parser
 
 # Construct a padded numpy matrices for a given PSSM matrix
+# This will be the function to change for embeddings
 def construct_tensor(fpath):
     ansarr = np.loadtxt(fpath).reshape(-1)
     # quit()
