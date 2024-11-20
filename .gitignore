@@ -7,3 +7,4 @@ examples/*/*/fasta0.9/*
 phosphatase_data/
 protein_kinase_data/
 radical_sam_data/
+embeddings/
