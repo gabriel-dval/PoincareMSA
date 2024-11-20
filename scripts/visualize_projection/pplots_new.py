@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from adjustText import adjust_text
-from scripts.visualize_projection.model import poincare_translation
+from model import poincare_translation
 
 import plotly.graph_objs as go
 #import plotly.io as pio
