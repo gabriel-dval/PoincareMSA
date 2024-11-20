@@ -4,7 +4,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from poincare_maps import *
 
-from sklearn.utils.graph_shortest_path import graph_shortest_path
 from scipy.sparse import csgraph
 from sklearn.neighbors import kneighbors_graph
 from scripts.build_poincare_map.data import connect_knn
@@ -30,7 +29,7 @@ def get_dist_manifold(data, k_neighbours = 20, knn_sym=True, my_metric = "cosine
         distances = pairwise_distances(data, metric=my_metric)
         KNN = connect_knn(KNN, distances, n_components, labels)
     
-    D_high = graph_shortest_path(KNN)
+    D_high = csgraph.shortest_path(KNN) # this is now deprecated : graph_shortest_path(KNN)
     return D_high
 
 
