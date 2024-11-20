@@ -44,6 +44,25 @@ def construct_tensor(fpath):
     return np.array(ansarr)
 
 
+def construct_tensor_from_embedding(fpath, option = 'mean'):
+    '''Same function as construct_tensor, but adapted for embeddings
+    
+    Args
+    ---
+    fpath : str
+        Path to embedding file; these are usually stored in .pt format
+    option : str
+        How should the embeddings be reduced ?
+
+    Returns
+    ---
+    tensor 
+    '''
+    fixed_embedding = torch.load(fpath)['embedding']
+    fixed_embedding = torch.mean(fixed_embedding)
+    return fixed_embedding
+
+
 def prepare_data(fpath, withroot = True, fmt='.txt'):
     # print([x[0] for x in os.walk(fpath)])
     # subfolders = [f.path for f in os.listdir(fpath) if f.is_dir() ]   
