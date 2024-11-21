@@ -101,12 +101,12 @@ def parse_args():
     parser.add_argument('--output_path', help='Path to dataset to embed', type=str, 
         default='/Users/klanna/UniParis/results/glob/')
     
-    # Path to output folder for intermediate matrices
-    parser.add_argument('--matrices_output_path', help='Path to save KNN and RFA matrices', type=str)
-
-     # Use mfasta or plm embeddings ?
+    # Use mfasta or plm embeddings ?
     parser.add_argument('--plm_embedding', help='Type of input data that should be used', type=str, 
         default='False')
+    
+    # Path to output folder for intermediate matrices
+    parser.add_argument('--matrices_output_path', help='Path to save KNN and RFA matrices', type=str)
 
     # Plot results ?
     parser.add_argument('--plot',
