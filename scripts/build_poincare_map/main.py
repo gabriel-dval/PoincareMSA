@@ -93,42 +93,44 @@ def parse_args():
         description='Adaptation of Poincare maps for MSA')
     parser.add_argument('--dim', help='Embedding dimension', type=int, default=2)
 
-    # Use mfasta or plm embeddings ?
-    parser.add_argument('--plm_embedding', help='Type of input data that should be used', type=str, 
-        default='True')
-
+    # Path to input files
     parser.add_argument('--input_path', help='Path to dataset to embed', type=str, 
         default='/Users/klanna/UniParis/PoincareMSA/data/glob/Nfasta/')
 
+    # Path to output folder for figures
     parser.add_argument('--output_path', help='Path to dataset to embed', type=str, 
         default='/Users/klanna/UniParis/results/glob/')
     
+    # Path to output folder for intermediate matrices
     parser.add_argument('--matrices_output_path', help='Path to save KNN and RFA matrices', type=str)
 
+     # Use mfasta or plm embeddings ?
+    parser.add_argument('--plm_embedding', help='Type of input data that should be used', type=str, 
+        default='False')
+
+    # Plot results ?
     parser.add_argument('--plot',
         help='Flag True or False, if you want to plot the output.', type=str, 
         default='True')
+    
+    # Checkout frequency
     parser.add_argument('--checkout_freq',
         help='Checkout frequency (in epochs) to show intermediate results', 
         type=int, default=10)
+
 
     parser.add_argument('--tree', 
         help='File with phylogenetic trees', type=str, default=5)
     parser.add_argument('--function', 
         help='Protein by function', type=str, default='glob-name')
-
     parser.add_argument('--seed',
         help='Random seed', type=int, default=0)
-
-    parser.add_argument('--labels', help='array containing the feature labels in the same order as in the features dataset used to compute the provided distance matrix',
-    type=str)
-    # parser.add_argument('--labels', help='has labels', type=int, default=1)
-    # parser.add_argument('--mode',
-    #     help='Mode: features or KNN', type=str, default='features')
+    parser.add_argument('--labels', help='array containing the feature labels in the same\
+        order as in the features dataset used to compute the provided distance matrix',
+        type=str)
     parser.add_argument('--distance_matrix',
         help='Path to the CSV file containing the precomputed distance matrix',
         type=str, default=None)
-
     parser.add_argument('--normalize',
         help='Apply z-transform to the data', type=int, default=0)
     parser.add_argument('--pca',
@@ -145,21 +147,14 @@ def parse_args():
         type=str, default='laplace')
     parser.add_argument('--lossfn', help='Loss funstion (kl, klSym)',
         type=str, default='klSym')
-
-#    parser.add_argument('--root', 
-#        help='Get root node from labels', type=str, default="root")
     parser.add_argument('--iroot',
         help='Index of the root cell', type=int, default=0)
-#    parser.add_argument('--rotate',
-#        help='Rotate', type=int, default=-1)
     parser.add_argument('--rotate',
         help='use 0 element for calculations or not', action='store_true')
-
     parser.add_argument('--knn', 
         help='Number of nearest neighbours in KNN', type=int, default=5)
     parser.add_argument('--connected',
         help='Force the knn graph to be connected', type=int, default=1)
-
     parser.add_argument('--sigma',
         help='Bandwidth in high dimensional space', type=float, default=1.0)
     parser.add_argument('--gamma',
