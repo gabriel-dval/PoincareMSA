@@ -11,7 +11,7 @@ import numpy as np
 import argparse
 import torch
 import pandas as pd
-from data import prepare_data, compute_rfa, compute_rfa_w_custom_distance
+from data import prepare_data, prepare_embedding_data, compute_rfa, compute_rfa_w_custom_distance
 from model import PoincareEmbedding, PoincareDistance
 from model import poincare_root, poincare_translation
 from rsgd import RiemannianSGD
@@ -92,6 +92,10 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description='Adaptation of Poincare maps for MSA')
     parser.add_argument('--dim', help='Embedding dimension', type=int, default=2)
+
+    # Use mfasta or plm embeddings ?
+    parser.add_argument('--plm_embedding', help='Type of input data that should be used', type=str, 
+        default='True')
 
     parser.add_argument('--input_path', help='Path to dataset to embed', type=str, 
         default='/Users/klanna/UniParis/PoincareMSA/data/glob/Nfasta/')
@@ -327,7 +331,7 @@ def poincare_map_w_custom_distance(opt):
 #    torch.manual_seed(opt.seed)
 
     # Features assignment only if a precomputed distance matrix is not provided
-    if opt.distance_matrix is None:
+    if opt.distance_matrix is None and opt.plm_embedding == 'False':
         features, labels = prepare_data(opt.input_path, withroot=opt.rotate)
         print(f'labels: {labels}')
 
@@ -342,7 +346,21 @@ def poincare_map_w_custom_distance(opt):
         print(f'labels CSV file saved to {labels_path}')
 
         distance_matrix = None
+    elif opt.distance_matrix is None and opt.plm_embedding == 'True':
+        features, labels = prepare_embedding_data(opt.input_path, withroot=opt.rotate)
+        print(f'labels: {labels}')
 
+        # Download features as CSV file, Numpy array
+        features_path = os.path.join(opt.matrices_output_path, 'features.csv')
+        np.savetxt(features_path, features, delimiter=',')
+        print(f'features CSV file saved to {features_path}')
+
+        # Download labels as CSV file, Numpy array
+        labels_path = os.path.join(opt.matrices_output_path, 'labels.csv')
+        np.savetxt(labels_path, labels, delimiter=',', fmt='%s')
+        print(f'labels CSV file saved to {labels_path}')
+
+        distance_matrix = None
     else:
         if opt.labels is None:
             raise AttributeError('You cannot input a custom distance matrix without corresponding feature labels')

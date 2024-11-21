@@ -59,7 +59,7 @@ def construct_tensor_from_embedding(fpath, option = 'mean'):
     tensor 
     '''
     fixed_embedding = torch.load(fpath)['embedding']
-    fixed_embedding = torch.mean(fixed_embedding)
+    fixed_embedding = np.mean(fixed_embedding, axis = 0)
     return fixed_embedding
 
 
