@@ -94,6 +94,52 @@ def prepare_data(fpath, withroot = True, fmt='.txt'):
     return torch.Tensor(features), np.array(labels)
 
 
+def prepare_embedding_data(fpath, withroot = True, fmt='.pt'):
+    '''Same function as prepare_data, but adapted to handle embeddings
+
+    Args
+    ---
+    fpath : str
+        Path to folder with the embeddings
+    withroot : boolean
+        Protein family root ?
+    fmt : str
+        What is the file type of the embeddings ?
+
+    Return
+    ---
+    torch.Tensor(features) : matrix of fixed embeddings
+    np.array(labels) : corresponding labels
+    '''
+    proteins = [s for s in os.listdir(fpath) if fmt in s]
+    n_proteins = len(proteins)
+    print(f"{n_proteins-1} proteins found in folder {fpath}.")
+
+    # if not withroot:
+    #     proteins.remove("0.txt")
+    #     n_proteins = len(proteins)
+    #     print("No root detected")
+
+    protein_file = proteins[0]
+    print(protein_file)
+    fin = f'{fpath}/{protein_file}'    
+
+    a = construct_tensor_from_embedding(fin)
+
+    features = np.zeros([n_proteins, len(a)])
+    labels = []
+    print("Prepare data: tensor construction")
+    for i, protein_name in enumerate(proteins):
+        #print(i, protein_name)
+        fin = f'{fpath}/{protein_name}'
+        features[i, :] = construct_tensor_from_embedding(fin)
+        labels.append(protein_name.split('.')[0])
+    print("Prepare data: successfully terminated")
+    print(features)
+    print(features.shape)
+    raise SystemExit
+    return torch.Tensor(features), np.array(labels)
+
 
 # def prepare_data(fin, with_labels=True, normalize=False, n_pca=0):
 #     """
