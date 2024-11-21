@@ -137,7 +137,6 @@ def prepare_embedding_data(fpath, withroot = True, fmt='.pt'):
     print("Prepare data: successfully terminated")
     print(features)
     print(features.shape)
-    raise SystemExit
     return torch.Tensor(features), np.array(labels)
 
 
