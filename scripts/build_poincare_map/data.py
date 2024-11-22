@@ -113,7 +113,8 @@ def prepare_embedding_data(fpath, withroot = True, fmt='.pt'):
     '''
     proteins = [s for s in os.listdir(fpath) if fmt in s]
     n_proteins = len(proteins)
-    print(f"{n_proteins-1} proteins found in folder {fpath}.")
+    print(f"{n_proteins} proteins found in folder {fpath}.")
+    print(proteins)
 
     # if not withroot:
     #     proteins.remove("0.txt")
@@ -137,6 +138,7 @@ def prepare_embedding_data(fpath, withroot = True, fmt='.pt'):
     print("Prepare data: successfully terminated")
     print(features)
     print(features.shape)
+    raise SystemError
     return torch.Tensor(features), np.array(labels)
 
 
