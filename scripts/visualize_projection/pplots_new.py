@@ -71,7 +71,7 @@ def read_embeddings(
 """
 
 
-def read_embeddings(path_embedding, path_annotation=None, withroot=True):
+def read_embeddings(path_embedding, path_annotation=None, withroot=True, ordered=True):
     """
     Prepare the plot data by concatenating the two dataframes.
     """
@@ -92,12 +92,27 @@ def read_embeddings(path_embedding, path_annotation=None, withroot=True):
         #Convert "int64" columns to "object"
         int_colnames = df_annotation.select_dtypes(['int64']).columns
         df_annotation[int_colnames] = df_annotation[int_colnames].astype("object")
+
+        # Match annotations to embeddings (unfortunately most robust way is a double for loop)
+        if not ordered:
+            if len(df_embeddings) == len(df_annotation):
+                embedding_labels = df_embeddings['label'].str.split(' ').str[0]
+                df_annotation['sort_order'] = df_annotation['id'].apply(lambda x: 
+                                                embedding_labels[embedding_labels == x].index[0])
+                df_annotation_sorted = df_annotation.sort_values(by='sort_order').drop(columns=['sort_order'])
+                df_annotation_sorted = df_annotation_sorted.reset_index(drop=True)
+
+                # Concatenate sorted arrays
+                df_concat = pd.concat([df_embeddings, df_annotation_sorted], axis=1)
+            else:
+                raise ValueError("Number of sequence and number of annotation doesn't match.")
         
         #If the two dataframe have the same length, concatenate them
-        if len(df_embeddings) == len(df_annotation):
-            df_concat = pd.concat([df_embeddings, df_annotation], axis=1)
         else:
-            raise ValueError("Number of sequence and number of annotation doesn't match.")
+            if len(df_embeddings) == len(df_annotation):
+                df_concat = pd.concat([df_embeddings, df_annotation], axis=1)
+            else:
+                raise ValueError("Number of sequence and number of annotation doesn't match.")
 
         df_concat.set_index(["proteins_id"], inplace=True)
         df_concat.insert(2, "proteins_id", df_concat.index)
