@@ -131,7 +131,7 @@ def prepare_embedding_data(fpath, withroot = True, fmt='.pt'):
     labels = []
     print("Prepare data: tensor construction")
     for i, protein_name in enumerate(proteins):
-        #print(i, protein_name)
+        print(i, protein_name)
         fin = f'{fpath}/{protein_name}'
         features[i, :] = construct_tensor_from_embedding(fin)
         labels.append(protein_name.split('.')[0])
