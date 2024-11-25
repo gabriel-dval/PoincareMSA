@@ -2,11 +2,11 @@ import numpy as np
 from sklearn.metrics import pairwise_distances
 import pandas as pd
 import matplotlib.pyplot as plt
-from poincare_maps import *
+from scripts.build_poincare_map.poincare_maps import *
 
 from scipy.sparse import csgraph
 from sklearn.neighbors import kneighbors_graph
-from data import connect_knn
+from scripts.build_poincare_map.data import connect_knn
 
 def get_dist_manifold(data, k_neighbours = 20, knn_sym=True, my_metric = "cosine"):
     """
