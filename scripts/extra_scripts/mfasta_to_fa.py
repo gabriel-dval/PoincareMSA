@@ -21,6 +21,6 @@ def convert_mfasta_to_fa(input_file, output_file):
             outfile.write(f"{header}\n{sequence}\n")
 
 # Example usage
-input_file = "input.mfasta"
-output_file = "output.fa"
+input_file = "examples/thioredoxins/thioredoxins.mfasta"
+output_file = "thioredoxins.fa"
 convert_mfasta_to_fa(input_file, output_file)
