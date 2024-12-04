@@ -20,12 +20,12 @@ import seaborn as sns
 
 
 # Directory containing STP embeddings
-class1_dir = "/dsimb/rennes/ghallab/Documents/PREP_DONNEES/SORTIES_MMSEQS/EMBEDDINGS/knottins-rep-embeddings"
-class1_dir = "/dsimb/defense/gelly/PROJECTS/CONCAT_EMBEDDING_PROJECTION/nonknottins-rep-embeddings"
+class1_dir = 'embeddings/ankh_base_globins'
+class1_dir = 'embeddings/ankh_base_globins'
 
 # Directory containing non-STP embeddings
-class2_dir = "/dsimb/rennes/ghallab/Documents/PREP_DONNEES/SORTIES_MMSEQS/EMBEDDINGS/nonknottins-rep-embeddings"
-class2_dir = "/dsimb/defense/gelly/PROJECTS/CONCAT_EMBEDDING_PROJECTION/knottins-rep-embeddings"
+class2_dir ='embeddings/ankh_base_globins'
+class2_dir = 'embeddings/ankh_base_globins'
 # Directory to save padded embeddings and tensors
 #output_dir = "/dsimb/rennes/ghallab/Documents/PREP_DONNEES/SORTIES_MMSEQS/EMBEDDINGS/padded_embeddings"
 
@@ -48,11 +48,10 @@ for filename in os.listdir(class2_dir):
     
 # Pad embeddings to a fixed length
 # embedding['representations'][5] is in fact the tensor comprise in the dictionnary "embedding".
-max_length = max(max(len(embedding['representations'][33]) for embedding in class1_embeddings),
-                 max(len(embedding['representations'][33]) for embedding in class2_embeddings))
+max_length = 768
 
-print(embedding['representations'][33][0].shape,file=sys.stderr)
-print(embedding['representations'][33][0],      file=sys.stderr)
+print(embedding['embedding'].shape, file=sys.stderr)
+print(embedding['embedding'], file=sys.stderr)
 
 
 #for j in range(0, 8):
@@ -67,9 +66,9 @@ print(embedding['representations'][33][0],      file=sys.stderr)
 #class2_padded_embeddings = [pad_embeddings(embedding['representations'][33]) for embedding in class2_embeddings]
 
 # Unpaded
-class1_padded_embeddings = [embedding['representations'][33] for embedding in class1_embeddings]
-class2_padded_embeddings = [embedding['representations'][33] for embedding in class2_embeddings]
-print(f'Shape: Class2 {len(class1_padded_embeddings)}',      file=sys.stderr)
+class1_padded_embeddings = [embedding['embedding'] for embedding in class1_embeddings]
+class2_padded_embeddings = [embedding['embedding'] for embedding in class2_embeddings]
+print(f'Shape: Class1 {len(class1_padded_embeddings)}',      file=sys.stderr)
 print(f'Shape: Class2 {len(class2_padded_embeddings)}',      file=sys.stderr)
 
 #Parametres---------------------------------------------------------------------------------------------------------------------------------
@@ -248,25 +247,26 @@ def align_embed(embedding1,embedding2):
 #num_file=0;
 
 #list files: to modify 
-class_padded_embeddings=class1_padded_embeddings+class2_padded_embeddings
+class_padded_embeddings=class1_padded_embeddings
 
-print(f'id',end='')
-for i in range(0,len(class_padded_embeddings)):
-    print(f'{i}',end='')
-    if (i == (len(class_padded_embeddings)-1)):    
-        print("\n",end='')
-    else:
-        print(',',end='')
+# print(f'id',end='')
+# for i in range(0,len(class_padded_embeddings)):
+#     print(f'{i}',end='')
+#     if (i == (len(class_padded_embeddings)-1)):    
+#         print("\n",end='')
+#     else:
+#         print(',',end='')
 
    
 for n, embedding1 in enumerate(class_padded_embeddings):
     #print(f'File:{n} Shape: {embedding1.shape}', file=sys.stderr)
     #print(f'Shape j: {embedding1.shape[0]} Shape: k {embedding1.shape[1]}', file=sys.stderr)
-    #np_embedding1=embedding1.numpy()
-    print(f'{n},',end='')
+    embedding1=torch.tensor(embedding1)
+    print(f'Embedding id : {n}')
     for m, embedding2 in enumerate(class_padded_embeddings):
         #print(f'File:{m} Shape: {embedding2.shape}', file=sys.stderr)
         #print(f'Shape j: {embedding2.shape[0]} Shape: k {embedding2.shape[1]}', file=sys.stderr)
+        embedding1=torch.tensor(embedding2)
         max_score,score_matrix=align_embed(embedding1,embedding2)
 
         name_file=f'{m}_{n}_scoring_matrix.csv'
