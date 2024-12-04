@@ -263,21 +263,24 @@ for n, embedding1 in enumerate(class_padded_embeddings):
     #print(f'Shape j: {embedding1.shape[0]} Shape: k {embedding1.shape[1]}', file=sys.stderr)
     embedding1=torch.tensor(embedding1)
     print(f'Embedding id : {n}')
+    print(f'Embedding_shape : {embedding1.shape}')
     for m, embedding2 in enumerate(class_padded_embeddings):
         #print(f'File:{m} Shape: {embedding2.shape}', file=sys.stderr)
         #print(f'Shape j: {embedding2.shape[0]} Shape: k {embedding2.shape[1]}', file=sys.stderr)
-        embedding1=torch.tensor(embedding2)
+        embedding2=torch.tensor(embedding2)
         max_score,score_matrix=align_embed(embedding1,embedding2)
 
         name_file=f'{m}_{n}_scoring_matrix.csv'
         # Save np matrix
-        np.savetxt(name_file, score_matrix, delimiter=',')
+        np.savetxt(f'scoring_matrices/{name_file}', score_matrix, delimiter=',')
+        print(score_matrix.shape)
 
         print(f'{max_score}',end='')
         if (m == (len(class_padded_embeddings)-1)):    
             print("\n",end='')
         else:
             print(',',end='')
+    break
 
 ###################################@
 
