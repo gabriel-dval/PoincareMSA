@@ -137,7 +137,7 @@ def parse_args():
         help='Apply pca for data preprocessing (if pca=0, no pca)', 
         type=int, default=0)
     parser.add_argument('--distlocal', 
-        help='Distance function (minkowski, cosine)', 
+        help='Distance function (minkowski, cosine, euclidean)', 
         type=str, default='cosine')
     parser.add_argument('--distfn', 
         help='Distance function (Euclidean, MFImixSym, MFI, MFIsym)', 

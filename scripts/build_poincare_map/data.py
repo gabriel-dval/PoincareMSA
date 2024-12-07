@@ -72,7 +72,7 @@ def prepare_data(fpath, withroot = True, fmt='.aamtx'):
     print(f"{n_proteins-1} proteins found in folder {fpath}.")
 
     if not withroot:
-        proteins.remove("0.txt")
+        proteins.remove(f"0{fmt}")
         n_proteins = len(proteins)
         print("No root detected")
 
