@@ -63,7 +63,7 @@ def construct_tensor_from_embedding(fpath, option = 'mean'):
     return fixed_embedding
 
 
-def prepare_data(fpath, withroot = True, fmt='.txt'):
+def prepare_data(fpath, withroot = True, fmt='.aamtx'):
     # print([x[0] for x in os.walk(fpath)])
     # subfolders = [f.path for f in os.listdir(fpath) if f.is_dir() ]   
     # fmt = '.aamtx'
