@@ -13,3 +13,5 @@ thioredoxins_data/
 embeddings/
 annotations/
 scoring_matrices/*.csv
+comparisons_not_publised/*.pdf
+*.pdf
