@@ -77,7 +77,6 @@ def read_embeddings(path_embedding, path_annotation=None, withroot=True, ordered
     """
     df_embeddings = pd.read_csv(path_embedding)
     df_embeddings.sort_values(["proteins_id"], ignore_index=True, ascending=True, inplace=True)
-    print(df_embeddings)
     #If an annotation file is provided
     if os.path.isfile(path_annotation):
         df_annotation = pd.read_csv(path_annotation)
