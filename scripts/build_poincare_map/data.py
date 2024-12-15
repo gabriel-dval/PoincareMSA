@@ -77,6 +77,7 @@ def prepare_data(fpath, withroot = True, fmt='.aamtx'):
         print("No root detected")
 
     protein_file = proteins[0]
+    print(proteins[:20])
     print(protein_file)
     fin = f'{fpath}/{protein_file}'    
 
